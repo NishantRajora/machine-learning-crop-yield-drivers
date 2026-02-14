@@ -21,34 +21,6 @@ The project focuses on **Indian agricultural data** and follows a reproducible e
 
 ---
 
-## 📂 Project Structure
-crop-yield-driver-discovery/
-│
-├── data/
-│ ├── raw/ # Original datasets
-│ ├── processed/ # Cleaned and transformed data
-│
-├── notebooks/
-│ ├── 01_data_analysis.ipynb
-│ ├── 02_feature_selection.ipynb
-│ ├── 03_model_training.ipynb
-│ ├── 04_model_evaluation.ipynb
-│ ├── 05_model_explainability.ipynb
-│
-├── src/
-│ ├── preprocessing.py
-│ ├── feature_selection.py
-│ ├── train_model.py
-│ ├── evaluate_model.py
-│
-├── results/
-│ ├── metrics/
-│ ├── feature_importance/
-│ ├── shap_plots/
-│
-├── requirements.txt
-├── README.md
-└── LICENSE
 
 
 ---
