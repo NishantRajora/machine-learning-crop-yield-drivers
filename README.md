@@ -19,7 +19,6 @@ The project focuses on **Indian agricultural data** and follows a reproducible e
 - Interpret predictions using SHAP
 - Provide actionable insights for agricultural decision-making
 
----
 
 
 
