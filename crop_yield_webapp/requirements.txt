@@ -2,3 +2,4 @@ streamlit
 pandas
 xgboost
 scikit-learn
+flask
