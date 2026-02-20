@@ -1,6 +1,4 @@
-flask
+streamlit
 pandas
-numpy
-scikit-learn
 xgboost
-joblib
+scikit-learn
