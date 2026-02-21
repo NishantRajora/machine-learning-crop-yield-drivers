@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Crop Yield Prediction</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial;
+            background-color: #f0f2f5;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            margin: auto;
+            width: 60%;
+            border-radius: 15px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            text-align: left;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input,
+        select {
+            padding: 10px;
+            width: 95%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            grid-column: span 2;
+            padding: 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        h2 {
+            color: #2d5a27;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e9f7ef;
+            border-radius: 10px;
+            color: #155724;
+            font-weight: bold;
+            font-size: 1.2em;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+    <script>
+        function updateDecade() {
+            const year = document.getElementById('Year').value;
+            if (year) {
+                const decade = Math.floor(year / 10) * 10;
+                document.getElementById('Decade').value = decade;
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h2>🌾 Crop Yield Prediction</h2>
+        <form method="POST" action="/">
+            <div class="grid-container">
+                <div class="input-group">
+                    <label>Year</label>
+                    <input type="number" id="Year" name="Year" oninput="updateDecade()" placeholder="e.g. 2024"
+                        required>
+                </div>
+                <div class="input-group">
+                    <label>Decade</label>
+                    <input type="number" id="Decade" name="Decade" readonly style="background-color: #eee;">
+                </div>
+
+                <div class="input-group">
+                    <label>State</label>
+                    <select name="State_encoded" required>
+                        {% for state, code in states.items() %}
+                        <option value="{{ code }}">{{ state }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Crop</label>
+                    <select name="Crop_encoded" required>
+                        {% for crop, code in crops.items() %}
+                        <option value="{{ code }}">{{ crop }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Season</label>
+                    <select name="Season_encoded" required>
+                        {% for season, code in seasons.items() %}
+                        <option value="{{ code }}">{{ season }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Area (ha)</label>
+                    <input type="number" step="any" name="Area_ha" required>
+                </div>
+
+                <div class="input-group"><label>N (kg/ha)</label><input type="number" step="any" name="N_req_kg_per_ha"
+                        required></div>
+                <div class="input-group"><label>P (kg/ha)</label><input type="number" step="any" name="P_req_kg_per_ha"
+                        required></div>
+                <div class="input-group"><label>K (kg/ha)</label><input type="number" step="any" name="K_req_kg_per_ha"
+                        required></div>
+                <div class="input-group"><label>Temp (°C)</label><input type="number" step="any" name="Temperature_C"
+                        required></div>
+                <div class="input-group"><label>Humidity (%)</label><input type="number" step="any" name="Humidity_%"
+                        required></div>
+                <div class="input-group"><label>Soil pH</label><input type="number" step="any" name="pH" required></div>
+                <div class="input-group"><label>Rainfall (mm)</label><input type="number" step="any" name="Rainfall_mm"
+                        required></div>
+                <div class="input-group"><label>Wind (m/s)</label><input type="number" step="any" name="Wind_Speed_m_s"
+                        required></div>
+                <div class="input-group"><label>Solar Rad.</label><input type="number" step="any"
+                        name="Solar_Radiation_MJ_m2_day" required></div>
+
+                <button type="submit">Analyze & Predict Yield</button>
+            </div>
+        </form>
+
+        {% if prediction %}
+        <div class="result">{{ prediction }}</div>
+        {% endif %}
+    </div>
+</body>
+
+</html>
