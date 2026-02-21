@@ -3,87 +3,225 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crop Yield Prediction</title>
     <style>
+        /* --- Variables & Reset --- */
+        :root {
+            --primary-color: #2d5a27;
+            /* Deep Green */
+            --secondary-color: #4caf50;
+            /* Fresh Green */
+            --accent-color: #ff9800;
+            /* Harvest Orange */
+            --bg-color: #eef2f3;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --input-bg: #f9f9f9;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: 'Segoe UI', Arial;
-            background-color: #f0f2f5;
-            text-align: center;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
+            color: var(--text-color);
         }
 
+        /* --- Main Container --- */
         .container {
-            background: white;
-            padding: 30px;
-            margin: auto;
-            width: 60%;
-            border-radius: 15px;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 900px;
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            animation: fadeIn 0.8s ease-out;
         }
 
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             gap: 10px;
-            text-align: left;
         }
 
-        .input-group {
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        /* --- Form Grid --- */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .section-title {
+            grid-column: 1 / -1;
+            font-size: 1.1em;
+            color: var(--secondary-color);
+            border-bottom: 2px solid #eee;
+            padding-bottom: 5px;
+            margin-top: 10px;
             margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        /* --- Input Groups --- */
+        .input-group {
+            display: flex;
+            flex-direction: column;
         }
 
         label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #333;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         input,
         select {
-            padding: 10px;
-            width: 95%;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: var(--input-bg);
+            font-size: 1em;
+            transition: all 0.3s ease;
+            outline: none;
+            color: #333;
         }
 
-        button {
-            grid-column: span 2;
-            padding: 15px;
-            background-color: #28a745;
+        /* Special styling for readonly Decade field */
+        input[readonly] {
+            background-color: #e9ecef;
+            color: #6c757d;
+            cursor: not-allowed;
+            border-color: #ced4da;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+            background-color: #fff;
+        }
+
+        /* --- Button --- */
+        .btn-submit {
+            grid-column: 1 / -1;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
             color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 10px;
-        }
-
-        button:hover {
-            background-color: #218838;
-        }
-
-        h2 {
-            color: #2d5a27;
-        }
-
-        .result {
-            margin-top: 20px;
             padding: 15px;
-            background: #e9f7ef;
-            border-radius: 10px;
-            color: #155724;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
             font-weight: bold;
-            font-size: 1.2em;
-            border: 1px solid #c3e6cb;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(45, 90, 39, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* --- Result Box --- */
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: linear-gradient(to right, #e8f5e9, #c8e6c9);
+            border-left: 5px solid var(--primary-color);
+            border-radius: 8px;
+            color: var(--primary-color);
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            animation: slideIn 0.5s ease-out;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* --- Mobile Adjustments --- */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
     <script>
         function updateDecade() {
-            const year = document.getElementById('Year').value;
-            if (year) {
-                const decade = Math.floor(year / 10) * 10;
-                document.getElementById('Decade').value = decade;
+            const yearInput = document.getElementById('Year');
+            const decadeInput = document.getElementById('Decade');
+
+            if (yearInput.value) {
+                // Calculate decade (e.g., 2024 -> 2020)
+                const year = parseInt(yearInput.value);
+                if (!isNaN(year)) {
+                    const decade = Math.floor(year / 10) * 10;
+                    decadeInput.value = decade;
+                }
+            } else {
+                decadeInput.value = '';
             }
         }
     </script>
@@ -91,22 +229,30 @@
 
 <body>
     <div class="container">
-        <h2>🌾 Crop Yield Prediction</h2>
+        <h2>🌾 Crop Yield Predictor</h2>
+        <p class="subtitle">Enter soil, weather, and crop details to estimate harvest</p>
+
         <form method="POST" action="/">
-            <div class="grid-container">
+            <div class="form-grid">
+
+                <!-- Section 1: Basic Info -->
+                <div class="section-title">General Information</div>
+
                 <div class="input-group">
-                    <label>Year</label>
+                    <label for="Year">Year</label>
                     <input type="number" id="Year" name="Year" oninput="updateDecade()" placeholder="e.g. 2024"
                         required>
                 </div>
+
                 <div class="input-group">
-                    <label>Decade</label>
-                    <input type="number" id="Decade" name="Decade" readonly style="background-color: #eee;">
+                    <label for="Decade">Decade (Auto)</label>
+                    <input type="number" id="Decade" name="Decade" readonly>
                 </div>
 
                 <div class="input-group">
-                    <label>State</label>
+                    <label for="State_encoded">State</label>
                     <select name="State_encoded" required>
+                        <option value="" disabled selected>Select State</option>
                         {% for state, code in states.items() %}
                         <option value="{{ code }}">{{ state }}</option>
                         {% endfor %}
@@ -114,8 +260,9 @@
                 </div>
 
                 <div class="input-group">
-                    <label>Crop</label>
+                    <label for="Crop_encoded">Crop Type</label>
                     <select name="Crop_encoded" required>
+                        <option value="" disabled selected>Select Crop</option>
                         {% for crop, code in crops.items() %}
                         <option value="{{ code }}">{{ crop }}</option>
                         {% endfor %}
@@ -123,8 +270,9 @@
                 </div>
 
                 <div class="input-group">
-                    <label>Season</label>
+                    <label for="Season_encoded">Season</label>
                     <select name="Season_encoded" required>
+                        <option value="" disabled selected>Select Season</option>
                         {% for season, code in seasons.items() %}
                         <option value="{{ code }}">{{ season }}</option>
                         {% endfor %}
@@ -132,34 +280,69 @@
                 </div>
 
                 <div class="input-group">
-                    <label>Area (ha)</label>
-                    <input type="number" step="any" name="Area_ha" required>
+                    <label for="Area_ha">Area (Hectares)</label>
+                    <input type="number" step="any" name="Area_ha" placeholder="e.g. 50.5" required>
                 </div>
 
-                <div class="input-group"><label>N (kg/ha)</label><input type="number" step="any" name="N_req_kg_per_ha"
-                        required></div>
-                <div class="input-group"><label>P (kg/ha)</label><input type="number" step="any" name="P_req_kg_per_ha"
-                        required></div>
-                <div class="input-group"><label>K (kg/ha)</label><input type="number" step="any" name="K_req_kg_per_ha"
-                        required></div>
-                <div class="input-group"><label>Temp (°C)</label><input type="number" step="any" name="Temperature_C"
-                        required></div>
-                <div class="input-group"><label>Humidity (%)</label><input type="number" step="any" name="Humidity_%"
-                        required></div>
-                <div class="input-group"><label>Soil pH</label><input type="number" step="any" name="pH" required></div>
-                <div class="input-group"><label>Rainfall (mm)</label><input type="number" step="any" name="Rainfall_mm"
-                        required></div>
-                <div class="input-group"><label>Wind (m/s)</label><input type="number" step="any" name="Wind_Speed_m_s"
-                        required></div>
-                <div class="input-group"><label>Solar Rad.</label><input type="number" step="any"
-                        name="Solar_Radiation_MJ_m2_day" required></div>
+                <!-- Section 2: Nutrients -->
+                <div class="section-title">Fertilizer & Nutrients</div>
 
-                <button type="submit">Analyze & Predict Yield</button>
+                <div class="input-group">
+                    <label for="N_req_kg_per_ha">Nitrogen (N) kg/ha</label>
+                    <input type="number" step="any" name="N_req_kg_per_ha" placeholder="e.g. 100" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="P_req_kg_per_ha">Phosphorus (P) kg/ha</label>
+                    <input type="number" step="any" name="P_req_kg_per_ha" placeholder="e.g. 50" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="K_req_kg_per_ha">Potassium (K) kg/ha</label>
+                    <input type="number" step="any" name="K_req_kg_per_ha" placeholder="e.g. 40" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="pH">Soil pH Level</label>
+                    <input type="number" step="any" name="pH" placeholder="e.g. 6.5" required>
+                </div>
+
+                <!-- Section 3: Weather -->
+                <div class="section-title">Weather & Environment</div>
+
+                <div class="input-group">
+                    <label for="Temperature_C">Avg. Temperature (°C)</label>
+                    <input type="number" step="any" name="Temperature_C" placeholder="e.g. 25" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="Humidity_%">Humidity (%)</label>
+                    <input type="number" step="any" name="Humidity_%" placeholder="e.g. 60" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="Rainfall_mm">Rainfall (mm)</label>
+                    <input type="number" step="any" name="Rainfall_mm" placeholder="e.g. 1200" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="Wind_Speed_m_s">Wind Speed (m/s)</label>
+                    <input type="number" step="any" name="Wind_Speed_m_s" placeholder="e.g. 5" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="Solar_Radiation_MJ_m2_day">Solar Radiation</label>
+                    <input type="number" step="any" name="Solar_Radiation_MJ_m2_day" placeholder="e.g. 18" required>
+                </div>
+
+                <button type="submit" class="btn-submit">🚀 Predict Yield</button>
             </div>
         </form>
 
         {% if prediction %}
-        <div class="result">{{ prediction }}</div>
+        <div class="result">
+            🌟 Predicted Yield: {{ prediction }}
+        </div>
         {% endif %}
     </div>
 </body>
