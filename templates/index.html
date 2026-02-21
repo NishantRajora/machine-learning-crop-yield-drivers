@@ -5,15 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crop Yield Prediction</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         /* --- Variables & Reset --- */
         :root {
             --primary-color: #2d5a27;
-            /* Deep Green */
             --secondary-color: #4caf50;
-            /* Fresh Green */
             --accent-color: #ff9800;
-            /* Harvest Orange */
             --bg-color: #eef2f3;
             --card-bg: #ffffff;
             --text-color: #333;
@@ -47,13 +46,13 @@
             padding: 40px;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
-            animation: fadeIn 0.8s ease-out;
+            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px);
             }
 
             to {
@@ -66,18 +65,36 @@
             text-align: center;
             color: var(--primary-color);
             margin-bottom: 10px;
-            font-size: 2em;
+            font-size: 2.2em;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
+        }
+
+        /* Animation for the leaf icon */
+        h2 i {
+            animation: swing 3s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes swing {
+
+            0%,
+            100% {
+                transform: rotate(-10deg);
+            }
+
+            50% {
+                transform: rotate(15deg);
+            }
         }
 
         .subtitle {
             text-align: center;
             color: #666;
             margin-bottom: 30px;
-            font-size: 0.9em;
+            font-size: 1em;
         }
 
         /* --- Form Grid --- */
@@ -89,102 +106,38 @@
 
         .section-title {
             grid-column: 1 / -1;
-            font-size: 1.1em;
+            font-size: 1.2em;
             color: var(--secondary-color);
             border-bottom: 2px solid #eee;
-            padding-bottom: 5px;
-            margin-top: 10px;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-        /* --- Input Groups --- */
-        .input-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            font-size: 0.85em;
-            font-weight: 600;
-            color: #555;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        input,
-        select {
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: var(--input-bg);
-            font-size: 1em;
-            transition: all 0.3s ease;
-            outline: none;
-            color: #333;
-        }
-
-        /* Special styling for readonly Decade field */
-        input[readonly] {
-            background-color: #e9ecef;
-            color: #6c757d;
-            cursor: not-allowed;
-            border-color: #ced4da;
-        }
-
-        input:focus,
-        select:focus {
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
-            background-color: #fff;
-        }
-
-        /* --- Button --- */
-        .btn-submit {
-            grid-column: 1 / -1;
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
+            padding-bottom: 8px;
             margin-top: 20px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            /* Entry Animation */
+            animation: slideLeft 0.6s ease-out forwards;
+            opacity: 0;
         }
 
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(45, 90, 39, 0.4);
+        /* Delay sections to appear one by one */
+        .section-title:nth-of-type(1) {
+            animation-delay: 0.2s;
         }
 
-        .btn-submit:active {
-            transform: translateY(0);
+        .section-title:nth-of-type(2) {
+            animation-delay: 0.4s;
         }
 
-        /* --- Result Box --- */
-        .result {
-            margin-top: 30px;
-            padding: 20px;
-            background: linear-gradient(to right, #e8f5e9, #c8e6c9);
-            border-left: 5px solid var(--primary-color);
-            border-radius: 8px;
-            color: var(--primary-color);
-            text-align: center;
-            font-size: 1.3em;
-            font-weight: bold;
-            animation: slideIn 0.5s ease-out;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        .section-title:nth-of-type(3) {
+            animation-delay: 0.6s;
         }
 
-        @keyframes slideIn {
+        @keyframes slideLeft {
             from {
                 opacity: 0;
-                transform: translateX(-10px);
+                transform: translateX(-20px);
             }
 
             to {
@@ -193,14 +146,138 @@
             }
         }
 
+        /* --- Input Groups --- */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+
+        .input-group:hover {
+            transform: translateY(-3px);
+        }
+
+        label {
+            font-size: 0.85em;
+            font-weight: 700;
+            color: #555;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            transition: color 0.3s ease;
+        }
+
+        input,
+        select {
+            padding: 12px 15px;
+            border: 2px solid #edf2f7;
+            border-radius: 8px;
+            background-color: var(--input-bg);
+            font-size: 1em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
+            color: #333;
+        }
+
+        /* Special styling for readonly Decade field */
+        input[readonly] {
+            background-color: #f1f3f5;
+            color: #adb5bd;
+            cursor: not-allowed;
+            border-style: dashed;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.15);
+            background-color: #fff;
+            transform: scale(1.02);
+        }
+
+        .input-group:focus-within label {
+            color: var(--secondary-color);
+        }
+
+        /* --- Button --- */
+        .btn-submit {
+            grid-column: 1 / -1;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.15em;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            box-shadow: 0 4px 15px rgba(45, 90, 39, 0.2);
+            /* Pulse animation */
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 12px rgba(76, 175, 80, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+            }
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 8px 20px rgba(45, 90, 39, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .btn-submit:active {
+            transform: translateY(-1px);
+        }
+
+        /* --- Result Box --- */
+        .result {
+            margin-top: 35px;
+            padding: 25px;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-radius: var(--border-radius);
+            color: var(--primary-color);
+            text-align: center;
+            font-size: 1.4em;
+            font-weight: 800;
+            border: 2px solid var(--secondary-color);
+            box-shadow: 0 15px 35px rgba(76, 175, 80, 0.15);
+            animation: popUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popUp {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
         /* --- Mobile Adjustments --- */
         @media (max-width: 600px) {
             .container {
-                padding: 20px;
+                padding: 25px;
             }
 
             h2 {
-                font-size: 1.5em;
+                font-size: 1.7em;
             }
 
             .form-grid {
@@ -208,13 +285,13 @@
             }
         }
     </style>
+
     <script>
         function updateDecade() {
             const yearInput = document.getElementById('Year');
             const decadeInput = document.getElementById('Decade');
 
             if (yearInput.value) {
-                // Calculate decade (e.g., 2024 -> 2020)
                 const year = parseInt(yearInput.value);
                 if (!isNaN(year)) {
                     const decade = Math.floor(year / 10) * 10;
@@ -224,19 +301,27 @@
                 decadeInput.value = '';
             }
         }
+
+        // Animation for the button on click
+        function handleLoading(event) {
+            const btn = document.querySelector('.btn-submit');
+            btn.style.width = btn.offsetWidth + "px"; // Maintain width
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            btn.style.pointerEvents = 'none';
+            btn.style.opacity = '0.8';
+        }
     </script>
 </head>
 
 <body>
     <div class="container">
-        <h2>🌾 Crop Yield Predictor</h2>
-        <p class="subtitle">Enter soil, weather, and crop details to estimate harvest</p>
+        <h2><i class="fas fa-leaf"></i> Crop Yield Predictor</h2>
+        <p class="subtitle">AI-Powered insights for sustainable agricultural harvest</p>
 
-        <form method="POST" action="/">
+        <form method="POST" action="/" onsubmit="handleLoading()">
             <div class="form-grid">
 
-                <!-- Section 1: Basic Info -->
-                <div class="section-title">General Information</div>
+                <div class="section-title"><i class="fas fa-info-circle"></i> General Information</div>
 
                 <div class="input-group">
                     <label for="Year">Year</label>
@@ -284,8 +369,7 @@
                     <input type="number" step="any" name="Area_ha" placeholder="e.g. 50.5" required>
                 </div>
 
-                <!-- Section 2: Nutrients -->
-                <div class="section-title">Fertilizer & Nutrients</div>
+                <div class="section-title"><i class="fas fa-flask"></i> Fertilizer & Nutrients</div>
 
                 <div class="input-group">
                     <label for="N_req_kg_per_ha">Nitrogen (N) kg/ha</label>
@@ -307,8 +391,7 @@
                     <input type="number" step="any" name="pH" placeholder="e.g. 6.5" required>
                 </div>
 
-                <!-- Section 3: Weather -->
-                <div class="section-title">Weather & Environment</div>
+                <div class="section-title"><i class="fas fa-cloud-sun-rain"></i> Weather & Environment</div>
 
                 <div class="input-group">
                     <label for="Temperature_C">Avg. Temperature (°C)</label>
@@ -341,7 +424,7 @@
 
         {% if prediction %}
         <div class="result">
-            🌟 Predicted Yield: {{ prediction }}
+            <i class="fas fa-check-circle"></i> {{ prediction }}
         </div>
         {% endif %}
     </div>
