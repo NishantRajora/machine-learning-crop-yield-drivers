@@ -3,431 +3,367 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crop Yield Prediction</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <title>Crop Yield Intelligence</title>
     <style>
-        /* --- Variables & Reset --- */
         :root {
-            --primary-color: #2d5a27;
-            --secondary-color: #4caf50;
-            --accent-color: #ff9800;
-            --bg-color: #eef2f3;
-            --card-bg: #ffffff;
-            --text-color: #333;
-            --input-bg: #f9f9f9;
-            --border-radius: 12px;
-            --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+            --primary: #2ecc71;
+            --bg: #f0f2f5;
+            --text: #2c3e50;
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            color: var(--text-color);
+            min-height: 100vh;
+            margin: 0;
+            transition: background-image 0.8s ease-in-out;
         }
 
-        /* --- Main Container --- */
         .container {
-            background: var(--card-bg);
-            width: 100%;
-            max-width: 900px;
+            width: 950px;
+            /* Slightly transparent white so the crop image shows through subtly */
+            background: rgba(255, 255, 255, 0.9);
+            background-size: cover;
+            background-position: center;
             padding: 40px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            position: relative;
+            transition: background-image 0.8s ease-in-out;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
+        /* Ensuring inputs remain readable over background images */
+        .input-group input,
+        .input-group select {
+            background: rgba(255, 255, 255, 0.9);
+        }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(240, 240, 240, 0.5);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
         }
 
         h2 {
-            text-align: center;
-            color: var(--primary-color);
-            margin-bottom: 10px;
-            font-size: 2.2em;
+            color: var(--primary);
+            margin: 0;
+            text-shadow: 1px 1px 2px white;
+        }
+
+        .menu-container {
+            position: relative;
+        }
+
+        .three-dots {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            font-size: 20px;
+            cursor: pointer;
+            color: #95a5a6;
             display: flex;
-            align-items: center;
             justify-content: center;
-            gap: 12px;
-        }
-
-        /* Animation for the leaf icon */
-        h2 i {
-            animation: swing 3s ease-in-out infinite;
-            display: inline-block;
-        }
-
-        @keyframes swing {
-
-            0%,
-            100% {
-                transform: rotate(-10deg);
-            }
-
-            50% {
-                transform: rotate(15deg);
-            }
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 1em;
-        }
-
-        /* --- Form Grid --- */
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .section-title {
-            grid-column: 1 / -1;
-            font-size: 1.2em;
-            color: var(--secondary-color);
-            border-bottom: 2px solid #eee;
-            padding-bottom: 8px;
-            margin-top: 20px;
-            margin-bottom: 15px;
-            font-weight: 700;
-            display: flex;
             align-items: center;
-            gap: 10px;
-            /* Entry Animation */
-            animation: slideLeft 0.6s ease-out forwards;
-            opacity: 0;
         }
 
-        /* Delay sections to appear one by one */
-        .section-title:nth-of-type(1) {
-            animation-delay: 0.2s;
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 45px;
+            background: white;
+            border-radius: 8px;
+            z-index: 100;
+            min-width: 200px;
+            border: 1px solid #ddd;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
-        .section-title:nth-of-type(2) {
-            animation-delay: 0.4s;
+        .dropdown-menu button {
+            width: 100%;
+            text-align: left;
+            padding: 12px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 14px;
         }
 
-        .section-title:nth-of-type(3) {
-            animation-delay: 0.6s;
+        .dropdown-menu button:hover {
+            background: #f8f9fa;
         }
 
-        @keyframes slideLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
         }
 
-        /* --- Input Groups --- */
         .input-group {
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.3s ease;
-        }
-
-        .input-group:hover {
-            transform: translateY(-3px);
+            margin-bottom: 15px;
         }
 
         label {
-            font-size: 0.85em;
+            display: block;
+            font-size: 0.85rem;
             font-weight: 700;
-            color: #555;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            transition: color 0.3s ease;
+            margin-bottom: 5px;
+            color: #2c3e50;
+            text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.8);
         }
 
         input,
         select {
-            padding: 12px 15px;
+            width: 100%;
+            padding: 10px;
             border: 2px solid #edf2f7;
             border-radius: 8px;
-            background-color: var(--input-bg);
-            font-size: 1em;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            outline: none;
-            color: #333;
+            box-sizing: border-box;
+            font-size: 0.95rem;
         }
 
-        /* Special styling for readonly Decade field */
-        input[readonly] {
-            background-color: #f1f3f5;
-            color: #adb5bd;
-            cursor: not-allowed;
-            border-style: dashed;
-        }
-
-        input:focus,
-        select:focus {
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.15);
-            background-color: #fff;
-            transform: scale(1.02);
-        }
-
-        .input-group:focus-within label {
-            color: var(--secondary-color);
-        }
-
-        /* --- Button --- */
-        .btn-submit {
-            grid-column: 1 / -1;
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        .btn-predict {
+            background: var(--primary);
             color: white;
+            width: 100%;
             padding: 16px;
+            font-weight: bold;
             border: none;
-            border-radius: 10px;
-            font-size: 1.15em;
-            font-weight: 800;
+            border-radius: 12px;
             cursor: pointer;
-            margin-top: 30px;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            box-shadow: 0 4px 15px rgba(45, 90, 39, 0.2);
-            /* Pulse animation */
-            animation: pulse 2s infinite;
+            margin-top: 20px;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
         }
 
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4);
-            }
-
-            70% {
-                box-shadow: 0 0 0 12px rgba(76, 175, 80, 0);
-            }
-
-            100% {
-                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
-            }
+        .nutrient-section {
+            background: rgba(248, 250, 252, 0.7);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px dashed #cbd5e1;
+            backdrop-filter: blur(2px);
         }
 
-        .btn-submit:hover {
-            transform: translateY(-4px) scale(1.01);
-            box-shadow: 0 8px 20px rgba(45, 90, 39, 0.4);
-            filter: brightness(1.1);
-        }
-
-        .btn-submit:active {
-            transform: translateY(-1px);
-        }
-
-        /* --- Result Box --- */
         .result {
-            margin-top: 35px;
-            padding: 25px;
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-            border-radius: var(--border-radius);
-            color: var(--primary-color);
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(241, 255, 246, 0.9);
+            border: 2px solid #2ecc71;
+            border-radius: 15px;
             text-align: center;
-            font-size: 1.4em;
-            font-weight: 800;
-            border: 2px solid var(--secondary-color);
-            box-shadow: 0 15px 35px rgba(76, 175, 80, 0.15);
-            animation: popUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes popUp {
-            0% {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        /* --- Mobile Adjustments --- */
-        @media (max-width: 600px) {
-            .container {
-                padding: 25px;
-            }
-
-            h2 {
-                font-size: 1.7em;
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
-
-    <script>
-        function updateDecade() {
-            const yearInput = document.getElementById('Year');
-            const decadeInput = document.getElementById('Decade');
-
-            if (yearInput.value) {
-                const year = parseInt(yearInput.value);
-                if (!isNaN(year)) {
-                    const decade = Math.floor(year / 10) * 10;
-                    decadeInput.value = decade;
-                }
-            } else {
-                decadeInput.value = '';
-            }
-        }
-
-        // Animation for the button on click
-        function handleLoading(event) {
-            const btn = document.querySelector('.btn-submit');
-            btn.style.width = btn.offsetWidth + "px"; // Maintain width
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-            btn.style.pointerEvents = 'none';
-            btn.style.opacity = '0.8';
-        }
-    </script>
 </head>
 
 <body>
-    <div class="container">
-        <h2><i class="fas fa-leaf"></i> Crop Yield Predictor</h2>
-        <p class="subtitle">AI-Powered insights for sustainable agricultural harvest</p>
 
-        <form method="POST" action="/" onsubmit="handleLoading()">
-            <div class="form-grid">
-
-                <div class="section-title"><i class="fas fa-info-circle"></i> General Information</div>
-
-                <div class="input-group">
-                    <label for="Year">Year</label>
-                    <input type="number" id="Year" name="Year" oninput="updateDecade()" placeholder="e.g. 2024"
-                        required>
+    <div class="container" id="formContainer">
+        <div class="header-section">
+            <h2>🌱 Crop Yield Intelligence</h2>
+            <div class="menu-container">
+                <button class="three-dots" onclick="toggleMenu()">⋮</button>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <button onclick="fillSampleData()">🧪 Load Sample Data</button>
+                    <button onclick="window.location.href='/'">🔄 Reset Form</button>
                 </div>
-
-                <div class="input-group">
-                    <label for="Decade">Decade (Auto)</label>
-                    <input type="number" id="Decade" name="Decade" readonly>
-                </div>
-
-                <div class="input-group">
-                    <label for="State_encoded">State</label>
-                    <select name="State_encoded" required>
-                        <option value="" disabled selected>Select State</option>
-                        {% for state, code in states.items() %}
-                        <option value="{{ code }}">{{ state }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="input-group">
-                    <label for="Crop_encoded">Crop Type</label>
-                    <select name="Crop_encoded" required>
-                        <option value="" disabled selected>Select Crop</option>
-                        {% for crop, code in crops.items() %}
-                        <option value="{{ code }}">{{ crop }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="input-group">
-                    <label for="Season_encoded">Season</label>
-                    <select name="Season_encoded" required>
-                        <option value="" disabled selected>Select Season</option>
-                        {% for season, code in seasons.items() %}
-                        <option value="{{ code }}">{{ season }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="input-group">
-                    <label for="Area_ha">Area (Hectares)</label>
-                    <input type="number" step="any" name="Area_ha" placeholder="e.g. 50.5" required>
-                </div>
-
-                <div class="section-title"><i class="fas fa-flask"></i> Fertilizer & Nutrients</div>
-
-                <div class="input-group">
-                    <label for="N_req_kg_per_ha">Nitrogen (N) kg/ha</label>
-                    <input type="number" step="any" name="N_req_kg_per_ha" placeholder="e.g. 100" required>
-                </div>
-
-                <div class="input-group">
-                    <label for="P_req_kg_per_ha">Phosphorus (P) kg/ha</label>
-                    <input type="number" step="any" name="P_req_kg_per_ha" placeholder="e.g. 50" required>
-                </div>
-
-                <div class="input-group">
-                    <label for="K_req_kg_per_ha">Potassium (K) kg/ha</label>
-                    <input type="number" step="any" name="K_req_kg_per_ha" placeholder="e.g. 40" required>
-                </div>
-
-                <div class="input-group">
-                    <label for="pH">Soil pH Level</label>
-                    <input type="number" step="any" name="pH" placeholder="e.g. 6.5" required>
-                </div>
-
-                <div class="section-title"><i class="fas fa-cloud-sun-rain"></i> Weather & Environment</div>
-
-                <div class="input-group">
-                    <label for="Temperature_C">Avg. Temperature (°C)</label>
-                    <input type="number" step="any" name="Temperature_C" placeholder="e.g. 25" required>
-                </div>
-
-                <div class="input-group">
-                    <label for="Humidity_%">Humidity (%)</label>
-                    <input type="number" step="any" name="Humidity_%" placeholder="e.g. 60" required>
-                </div>
-
-                <div class="input-group">
-                    <label for="Rainfall_mm">Rainfall (mm)</label>
-                    <input type="number" step="any" name="Rainfall_mm" placeholder="e.g. 1200" required>
-                </div>
-
-                <div class="input-group">
-                    <label for="Wind_Speed_m_s">Wind Speed (m/s)</label>
-                    <input type="number" step="any" name="Wind_Speed_m_s" placeholder="e.g. 5" required>
-                </div>
-
-                <div class="input-group">
-                    <label for="Solar_Radiation_MJ_m2_day">Solar Radiation</label>
-                    <input type="number" step="any" name="Solar_Radiation_MJ_m2_day" placeholder="e.g. 18" required>
-                </div>
-
-                <button type="submit" class="btn-submit">🚀 Predict Yield</button>
             </div>
+        </div>
+
+        <form action="/predict" method="POST">
+            <div class="grid">
+                <div>
+                    <div class="input-group">
+                        <label>State</label>
+                        <select name="State" id="State" required>
+                            <option value="" disabled {% if not inputs.State %}selected{% endif %}>Select State</option>
+                            {% for s in states %}
+                            <option value="{{s}}" {% if inputs.State==s %}selected{% endif %}>{{s}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Crop</label>
+                        <select name="Crop" id="Crop" required onchange="updateCropBackground()">
+                            <option value="" disabled {% if not inputs.Crop %}selected{% endif %}>Select Crop</option>
+                            {% for c in crops %}
+                            <option value="{{c}}" {% if inputs.Crop==c %}selected{% endif %}>{{c}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Season</label>
+                        <select name="Season" id="Season" required onchange="updateSeasonBackground()">
+                            <option value="" disabled {% if not inputs.Season %}selected{% endif %}>Select Season
+                            </option>
+                            {% for sea in seasons %}
+                            <option value="{{sea}}" {% if inputs.Season==sea %}selected{% endif %}>{{sea}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Year</label>
+                        <input type="number" name="Year" id="Year" value="{{ inputs.Year }}" placeholder="e.g. 1966"
+                            required>
+                    </div>
+                    <div class="input-group">
+                        <label>Temperature (°C)</label>
+                        <input type="number" step="any" name="Temp" id="Temp" value="{{ inputs.Temp }}"
+                            placeholder="e.g. 25" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Rainfall (mm)</label>
+                        <input type="number" step="any" name="Rainfall" id="Rainfall" value="{{ inputs.Rainfall }}"
+                            placeholder="e.g. 1200" required>
+                    </div>
+                </div>
+
+                <div class="nutrient-section">
+                    <div class="input-group">
+                        <label>Nitrogen (N)</label>
+                        <input type="number" step="any" name="N" id="N" value="{{ inputs.N }}" placeholder="e.g. 8.44"
+                            required>
+                    </div>
+                    <div class="input-group">
+                        <label>Phosphorus (P)</label>
+                        <input type="number" step="any" name="P" id="P" value="{{ inputs.P }}" placeholder="e.g. 4.05"
+                            required>
+                    </div>
+                    <div class="input-group">
+                        <label>Potassium (K)</label>
+                        <input type="number" step="any" name="K" id="K" value="{{ inputs.K }}" placeholder="e.g. 7.43"
+                            required>
+                    </div>
+                    <div class="input-group">
+                        <label>Soil pH</label>
+                        <input type="number" step="any" name="pH" id="pH" value="{{ inputs.pH }}" placeholder="e.g. 6.5"
+                            required>
+                    </div>
+                    <div class="input-group">
+                        <label>Area (ha)</label>
+                        <input type="number" step="any" name="Area_ha" id="Area_ha" value="{{ inputs.Area_ha }}"
+                            placeholder="e.g. 548000" required>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn-predict">Analyze & Predict Yield</button>
         </form>
 
         {% if prediction %}
         <div class="result">
-            <i class="fas fa-check-circle"></i> {{ prediction }}
+            <h3 style="margin:0; font-size: 1.8rem; color: #155724;"><strong>{{ prediction }} kg/ha</strong></h3>
         </div>
         {% endif %}
     </div>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('dropdownMenu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Logic for Page Background based on Season
+        function updateSeasonBackground() {
+            const season = document.getElementById('Season').value;
+            let imageUrl = "";
+
+            switch (season) {
+                case "Kharif":
+                    // Lush green fields with monsoon clouds
+                    imageUrl = "https://images.unsplash.com/photo-1502333302334-44b82772739e?q=80&w=1920&auto=format&fit=crop";
+                    break;
+                case "Rabi":
+                    // Morning mist over winter crops
+                    imageUrl = "https://images.unsplash.com/photo-1470240731273-7821a6eeb6bd?q=80&w=1920&auto=format&fit=crop";
+                    break;
+                case "Summer":
+                    // Bright sun over dry or summer-ready land
+                    imageUrl = "https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?q=80&w=1920&auto=format&fit=crop";
+                    break;
+                case "Whole Year":
+                    // Scenic panoramic farmland
+                    imageUrl = "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1920&auto=format&fit=crop";
+                    break;
+                default:
+                    imageUrl = "https://images.unsplash.com/photo-1464226184884-fa280b87c399?q=80&w=1920&auto=format&fit=crop";
+            }
+            document.body.style.backgroundImage = `url('${imageUrl}')`;
+        }
+
+        // Logic for Form Background based on Crop
+        function updateCropBackground() {
+            const crop = document.getElementById('Crop').value.toLowerCase();
+            const container = document.getElementById('formContainer');
+            let imageUrl = "";
+
+            // Mapping specific images to the requested crops
+            if (crop.includes("rice")) {
+                // High-res lush green rice terrace
+                imageUrl = "https://images.unsplash.com/photo-1536657464919-892534f60d6e?q=80&w=1000&auto=format&fit=crop";
+            } else if (crop.includes("maize")) {
+                // Bright corn/maize field
+                imageUrl = "https://images.unsplash.com/photo-1551754655-cd27e38d2076?q=80&w=1000&auto=format&fit=crop";
+            } else if (crop.includes("cotton")) {
+                // Close up of soft cotton bolls
+                imageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROlOevMrSY05u9Ie3cvtGifcYoKUSJS-mIhg&s";
+            } else if (crop.includes("chickpea")) {
+                // Field of green chickpea plants/pods
+                imageUrl = "https://images.unsplash.com/photo-1515942400420-2b98fed1f515?q=80&w=1000&auto=format&fit=crop";
+            } else {
+                imageUrl = "none";
+            }
+
+            if (imageUrl !== "none") {
+                // Linear gradient ensures form text remains readable over the image
+                container.style.backgroundImage = `linear-gradient(rgba(255,255,255,0.88), rgba(255,255,255,0.88)), url('${imageUrl}')`;
+                container.style.backgroundSize = "cover";
+                container.style.backgroundPosition = "center";
+            } else {
+                container.style.backgroundImage = "none";
+                container.style.backgroundColor = "white";
+            }
+        }
+
+        function fillSampleData() {
+            document.getElementById('State').value = "Chhattisgarh";
+            document.getElementById('Crop').value = "Rice";
+            document.getElementById('Season').value = "Rabi";
+            document.getElementById('Year').value = 1966;
+            document.getElementById('Temp').value = 25;
+            document.getElementById('Rainfall').value = 1200;
+            document.getElementById('N').value = 8.44;
+            document.getElementById('P').value = 4.05;
+            document.getElementById('K').value = 7.43;
+            document.getElementById('pH').value = 6.5;
+            document.getElementById('Area_ha').value = 548000;
+
+            updateSeasonBackground();
+            updateCropBackground();
+            toggleMenu();
+        }
+
+        window.onclick = function (event) {
+            if (!event.target.matches('.three-dots')) {
+                const menu = document.getElementById('dropdownMenu');
+                if (menu && menu.style.display === 'block') menu.style.display = 'none';
+            }
+        }
+
+        window.onload = function () {
+            updateSeasonBackground();
+            updateCropBackground();
+        };
+    </script>
 </body>
 
 </html>
