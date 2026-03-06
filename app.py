@@ -25,7 +25,6 @@ def home():
 def predict():
     try:
         year_val = int(request.form['Year'])
-        
         # Build dictionary for Scaling
         ui_data = {
             'Year': year_val,
