@@ -171,8 +171,6 @@ flowchart LR
 <div align="center">
 
 **Nishant Rajora** 
-*Undergraduate – Data Science* 
-**The NorthCap University**
 
 [![GitHub](https://img.shields.io/badge/GitHub-Follow-181717?style=for-the-badge&logo=github)](https://github.com)
 
