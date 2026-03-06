@@ -352,6 +352,179 @@
       color: var(--accent1);
     }
 
+    /* Explanation section */
+    .explain-header {
+      margin: 40px 0 20px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.7s forwards;
+    }
+
+    .explain-header-label {
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--accent2);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .explain-header h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .explain-header p {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 680px;
+    }
+
+    .explain-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .explain-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 24px 26px;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards;
+      transition: border-color 0.3s, transform 0.2s;
+    }
+
+    .explain-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .explain-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+    }
+
+    .explain-card[data-model="Gradient Boosting"]::before {
+      background: #00f5d4;
+    }
+
+    .explain-card[data-model="Random Forest"]::before {
+      background: #7209b7;
+    }
+
+    .explain-card[data-model="Linear Regression"]::before {
+      background: #f72585;
+    }
+
+    .explain-card[data-model="XGBoost"]::before {
+      background: #ffd60a;
+    }
+
+    .explain-card:hover {
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .explain-model-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .explain-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .explain-model-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .explain-rank {
+      margin-left: auto;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    .explain-metrics {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .explain-metric {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .explain-metric-label {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .explain-metric-val {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .explain-text {
+      font-size: 12px;
+      line-height: 1.75;
+      color: #9090b0;
+    }
+
+    .explain-overall {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent1);
+      border-radius: 4px;
+      padding: 22px 26px;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 1.15s forwards;
+    }
+
+    .explain-overall-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent1);
+      margin-bottom: 8px;
+    }
+
+    .explain-overall-text {
+      font-size: 13px;
+      line-height: 1.75;
+      color: #b0b0cc;
+    }
+
     @keyframes fadeUp {
       from {
         opacity: 0;
@@ -416,6 +589,27 @@
       <table id="results-table"></table>
     </div>
 
+    <!-- EXPLANATION SECTION -->
+    <div class="explain-header">
+      <div class="explain-header-label">// Analysis &amp; Insights</div>
+      <h2>Why These Values?</h2>
+      <p>A breakdown of each model's performance and the reasons behind the numbers — based on the crop yield prediction
+        task.</p>
+    </div>
+
+    <div class="explain-grid" id="explain-grid"></div>
+
+    <div class="explain-overall">
+      <div class="explain-overall-label">// Overall Takeaway</div>
+      <div class="explain-overall-text">
+        All models achieved very high R² scores (0.997–0.999), indicating the dataset contains
+        <strong style="color:#e8e8f0">strong correlations</strong> between input features
+        (rainfall, fertilizer, humidity, crop type) and yield. When the signal is this strong, even
+        Linear Regression can perform well — the key differentiator is how each model handles
+        residual variance and outlier predictions, which is why the RMSE gap is so large.
+      </div>
+    </div>
+
   </div>
 
   <div class="tooltip" id="tooltip">
@@ -427,10 +621,10 @@
     // ── DATA ────────────────────────────────────────────────────────────────────
     // Replace this data with your actual results
     const rawData = [
-      { Model: "XGBoost", RMSE: 3.21, MAE: 2.18, "R²": 0.947, "Training Time (sec)": 1.82 },
-      { Model: "Gradient Boosting", RMSE: 3.47, MAE: 2.41, "R²": 0.938, "Training Time (sec)": 4.30 },
-      { Model: "Random Forest", RMSE: 4.12, MAE: 2.89, "R²": 0.913, "Training Time (sec)": 2.15 },
-      { Model: "Linear Regression", RMSE: 6.84, MAE: 5.10, "R²": 0.771, "Training Time (sec)": 0.04 },
+      { Model: "Gradient Boosting", RMSE: 2.989669, MAE: 2.074983, "R²": 0.999991, "Training Time (sec)": 55.927979 },
+      { Model: "Random Forest", RMSE: 9.451137, MAE: 0.355850, "R²": 0.999912, "Training Time (sec)": 36.434604 },
+      { Model: "Linear Regression", RMSE: 14.494397, MAE: 9.326989, "R²": 0.999793, "Training Time (sec)": 0.037624 },
+      { Model: "XGBoost", RMSE: 47.765135, MAE: 6.261966, "R²": 0.997751, "Training Time (sec)": 3.567634 },
     ];
 
     // Sort by RMSE ascending (best first)
@@ -604,9 +798,69 @@
       t.appendChild(tbody);
     }
 
+    // ── EXPLANATIONS ─────────────────────────────────────────────────────────────
+    const explanations = {
+      "Gradient Boosting": {
+        rank: "#1 Overall",
+        why: "Learns from previous errors step-by-step (boosting), allowing it to capture complex non-linear relationships between rainfall, fertilizer usage, and humidity. Each new tree corrects what the last one got wrong — resulting in the lowest RMSE of 2.99. The trade-off is training time: at 55.9s it is the slowest model by far."
+      },
+      "Random Forest": {
+        rank: "#2 Overall",
+        why: "Builds many independent decision trees and averages their predictions, handling non-linear feature interactions well. Its MAE of 0.36 is the best of all models — meaning most individual predictions are very close — but it does not sequentially correct errors like boosting, so its RMSE of 9.45 is higher. It still trains in 36s without needing the sequential error-correction overhead."
+      },
+      "Linear Regression": {
+        rank: "#3 Overall",
+        why: "Achieved a surprisingly high R² of 0.9998 because the dataset has very strong linear relationships between features (fertilizer, rainfall, crop type) and yield. However, the RMSE of 14.49 and MAE of 9.33 show it struggles with large outlier predictions. The big advantage: it trains in just 0.037 seconds — nearly 1500× faster than Gradient Boosting."
+      },
+      "XGBoost": {
+        rank: "#4 Overall",
+        why: "Despite being a gradient boosting variant, XGBoost underperformed here with an RMSE of 47.77 — likely due to default hyperparameters (learning rate, max depth, n_estimators) not being tuned for this dataset's scale. With proper grid search or Bayesian tuning, XGBoost could likely match or beat Gradient Boosting. Its R² of 0.9978 is still very high."
+      }
+    };
+
+    function buildExplain() {
+      const grid = document.getElementById("explain-grid");
+      const delays = [0.75, 0.85, 0.95, 1.05];
+      data.forEach((d, i) => {
+        const ex = explanations[d.Model];
+        const color = colorMap[d.Model];
+        const card = document.createElement("div");
+        card.className = "explain-card";
+        card.setAttribute("data-model", d.Model);
+        card.style.animationDelay = delays[i] + "s";
+        card.innerHTML = `
+      <div class="explain-model-row">
+        <div class="explain-dot" style="background:${color}"></div>
+        <div class="explain-model-name" style="color:${color}">${d.Model}</div>
+        <div class="explain-rank">${ex.rank}</div>
+      </div>
+      <div class="explain-metrics">
+        <div class="explain-metric">
+          <span class="explain-metric-label">RMSE</span>
+          <span class="explain-metric-val" style="color:${color}">${d.RMSE.toFixed(4)}</span>
+        </div>
+        <div class="explain-metric">
+          <span class="explain-metric-label">MAE</span>
+          <span class="explain-metric-val" style="color:${color}">${d.MAE.toFixed(4)}</span>
+        </div>
+        <div class="explain-metric">
+          <span class="explain-metric-label">R²</span>
+          <span class="explain-metric-val" style="color:${color}">${d["R²"].toFixed(6)}</span>
+        </div>
+        <div class="explain-metric">
+          <span class="explain-metric-label">Train Time</span>
+          <span class="explain-metric-val" style="color:${color}">${d["Training Time (sec)"].toFixed(2)}s</span>
+        </div>
+      </div>
+      <div class="explain-text">${ex.why}</div>
+    `;
+        grid.appendChild(card);
+      });
+    }
+
     // ── INIT ─────────────────────────────────────────────────────────────────────
     window.addEventListener("load", () => {
-      setTimeout(() => { drawAll(); buildTable(); }, 100);
+      setTimeout(() => { drawAll(); buildTable(); buildExplain(); }, 100);
     });
     window.addEventListener("resize", drawAll);
   </script>
